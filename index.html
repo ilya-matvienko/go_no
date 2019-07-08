@@ -1,0 +1,106 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Крестики-хуйолики</title>
+
+  <style>
+    td{
+    	width: 30px;
+    	height: 30px;
+    	border: 1px solid black;
+    	cursor: pointer;
+    	text-align: center;
+    	font-family: cursive;
+    }
+  </style>
+</head>
+
+<body>
+  <input type="number" id="count">
+  <table id="myTable">
+  </table>
+
+  <script>
+    const table = document.getElementById("myTable");
+    let symbol = 'O';
+    let canPlay = false;
+
+	  function check() {
+      const count = table.getElementsByTagName('tr').length;
+  		let flag;
+
+  		for(let i = 0; i < count; i++){
+  			let winRow = true,
+  			    winColumn = true,
+  			    winLeftTop = true,
+  			    winLeftBottom = true;
+
+  			for(let x = 0; x < count; x++){
+        	const row = table.rows[i].cells[x].innerHTML;
+          const column = table.rows[x].cells[i].innerHTML;
+          const leftTop = table.rows[x].cells[x].innerHTML;
+          const leftBottom = table.rows[count-1-x].cells[x].innerHTML;
+
+  				if(row !== symbol) winRow = false;
+  				if(column !== symbol) winColumn = false;
+  				if(leftTop !== symbol) winLeftTop = false;
+  				if(leftBottom !== symbol) winLeftBottom = false;
+  			}
+
+  			if(winRow || winColumn || winLeftTop || winLeftBottom){
+  				flag = true;
+  				break;
+  			}
+  		}
+
+  		if (flag) {
+      	if (!canPlay) return;
+        canPlay = false;
+
+  		  alert("Победили педики " + symbol);
+  		}
+	  }
+
+  	function setTdListeners() {
+      const tds = document.getElementsByTagName('td');
+
+      for(let i = 0; i < tds.length; i++){
+        tds[i].addEventListener('click', function() {
+        	const value = this.innerHTML;
+
+        	if (value !== '' || !canPlay) return;
+
+          if(symbol !== 'X'){
+            this.innerHTML = symbol = 'X';
+          } else {
+            this.innerHTML = symbol = 'O';
+          }
+
+          check();
+        })
+      };
+    };
+
+
+    document.getElementById('count').addEventListener('blur', function() {
+      const count = this.value;
+
+      canPlay = true;
+      table.innerHTML = '';
+
+      for(let i = 0; i < count; i++){
+        const tr = document.createElement('tr');
+       	for(let x = 0; x < count; x++){
+        	const td = document.createElement('td');
+          tr.appendChild(td);
+      	}
+      	table.appendChild(tr);
+      }
+    	setTdListeners();
+    });
+  </script>
+</body>
+</html>
